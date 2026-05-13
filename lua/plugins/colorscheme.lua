@@ -1,12 +1,10 @@
 return {
-  { "projekt0n/github-nvim-theme" }, -- github if i want
-  { -- set theme
-    "LazyVim/LazyVim",
-    opts = function()
-      local theme = "tokyonight-night"
-      return {
-        colorscheme = theme,
-      }
-    end,
-  },
+	{
+		"folke/tokyonight.nvim",
+		lazy = false,
+		priority = 1000,
+		config = function()
+			vim.cmd([[colorscheme tokyonight-night]])
+		end,
+	},
 }
