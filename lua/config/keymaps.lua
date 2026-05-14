@@ -1,69 +1,61 @@
--- Keymaps are automatically loaded on the VeryLazy event
--- Default keymaps that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
--- Add any additional keymaps here
-
 local map = vim.keymap.set
-local wk = require("which-key")
-
-local function doCompletions()
-  local cmp = require("blink.cmp")
-  if cmp.is_visible() then
-    cmp.hide()
-  else
-    cmp.show()
-  end
-end
 
 map("t", "<C-x>", "<C-\\><C-n>")
 map("t", "<Esc>", "<C-\\><C-n>")
 map("i", "jk", "<Esc>")
 map("t", "jk", "<C-\\><C-n>")
 map("n", "<M-/>", vim.cmd.noh, { desc = "Clear Search" })
+map("n", "<leader>c", vim.cmd.noh, { desc = "Clear Search" })
 map("n", "<leader>fw", vim.cmd.write, { desc = "Save File" })
-map("i", "<C-e>", doCompletions, { desc = "Toggle Completions" })
+map("n", "<leader>qq", vim.cmd.quitall, { desc = "Close nvim" })
 
--- GITHUB
-wk.add({
-  { "<leader>gh", group = "Github" },
-  { "<leader>ghc", group = "Commits" },
-  { "<leader>ghcc", vim.cmd.GHCloseCommit, desc = "Close" },
-  { "<leader>ghce", vim.cmd.GHExpandCommit, desc = "Expand" },
-  { "<leader>ghco", vim.cmd.GHOpenToCommit, desc = "Open To" },
-  { "<leader>ghcp", vim.cmd.GHPopOutCommit, desc = "Pop Out" },
-  { "<leader>ghcz", vim.cmd.GHCollapseCommit, desc = "Collapse" },
+map("n", "n", "nzzzv", { desc = "Next search result" })
+map("n", "N", "Nzzzv", { desc = "Previous search result" })
 
-  { "<leader>ghi", group = "Issues" },
-  { "<leader>ghip", vim.cmd.GHPreviewIssue, desc = "Preview" },
+map("x", "<leader>p", '"_dP', { desc = "Paste without yanking" })
+map({ "n", "v" }, "<leader>x", '"_d', { desc = "Delete without yanking" })
 
-  { "<leader>ghl", group = "Litee" },
-  { "<leader>ghlt", vim.cmd.LTPanel, desc = "Toggle Panel" },
+map("n", "<leader>sv", ":vsplit<CR>", { desc = "Split window vertically" })
+map("n", "<leader>sh", ":split<CR>", { desc = "Split window horizontally" })
+map("n", "<C-Up>", ":resize +2<CR>", { desc = "Increase window height" })
+map("n", "<C-Down>", ":resize -2<CR>", { desc = "Decrease window height" })
+map("n", "<C-Left>", ":vertical resize -2<CR>", { desc = "Decrease window width" })
+map("n", "<C-Right>", ":vertical resize +2<CR>", { desc = "Increase window width" })
 
-  { "<leader>ghp", group = "Pull Request" },
-  { "<leader>ghpc", vim.cmd.GHClosePR, desc = "Close" },
-  { "<leader>ghpd", vim.cmd.GHPRDetails, desc = "Details" },
-  { "<leader>ghpe", vim.cmd.GHExpandPR, desc = "Expand" },
-  { "<leader>ghpo", vim.cmd.GHOpenPR, desc = "Open" },
-  { "<leader>ghpp", vim.cmd.GHPopOutPR, desc = "PopOut" },
-  { "<leader>ghpr", vim.cmd.GHRefreshPR, desc = "Refresh" },
-  { "<leader>ghpt", vim.cmd.GHOpenToPR, desc = "Open To" },
-  { "<leader>ghpz", vim.cmd.GHCollapsePR, desc = "Collapse" },
+map("n", "<A-j>", ":m .+1<CR>==", { desc = "Move line down" })
+map("n", "<A-k>", ":m .-2<CR>==", { desc = "Move line up" })
+map("v", "<A-j>", ":m '>+1<CR>gv=gv", { desc = "Move selection down" })
+map("v", "<A-k>", ":m '<-2<CR>gv=gv", { desc = "Move selection up" })
 
-  { "<leader>ghr", group = "Review" },
-  { "<leader>ghrb", vim.cmd.GHStartReview, desc = "Begin" },
-  { "<leader>ghrc", vim.cmd.GHCloseReview, desc = "Close" },
-  { "<leader>ghrd", vim.cmd.GHDeleteReview, desc = "Delete" },
-  { "<leader>ghre", vim.cmd.GHExpandReview, desc = "Expand" },
-  { "<leader>ghrs", vim.cmd.GHSubmitReview, desc = "Submit" },
-  { "<leader>ghrz", vim.cmd.GHCollapseReview, desc = "Collapse" },
+map("v", "<", "<gv", { desc = "Indent left and reselect" })
+map("v", ">", ">gv", { desc = "Indent right and reselect" })
 
-  { "<leader>ght", group = "Threads" },
-  { "<leader>ghtc", vim.cmd.GHCreateThread, desc = "Create" },
-  { "<leader>ghtn", vim.cmd.GHNextThread, desc = "Next" },
-  { "<leader>ghtt", vim.cmd.GHToggleThread, desc = "Toggle" },
-})
+map("n", "J", "mzJ`z", { desc = "Join lines and keep cursor position" })
+
+map("n", "<leader>pa", function() -- show file path
+	local path = vim.fn.expand("%:p")
+	vim.fn.setreg("+", path)
+	print("file:", path)
+end, { desc = "Copy full file path" })
+
+map("n", "<leader>td", function()
+	vim.diagnostic.enable(not vim.diagnostic.is_enabled())
+end, { desc = "Toggle diagnostics" })
+
+map("n", "<leader>bf", function()
+  vim.lsp.buf.format({
+    async = true,
+    timeout_ms = 5000,
+  })
+end, { desc = "Format buffer" })
+
+map("n", "<C-h>", "<C-w>h")
+map("n", "<C-j>", "<C-w>j")
+map("n", "<C-k>", "<C-w>k")
+map("n", "<C-l>", "<C-w>l")
 
 if vim.g.neovide == true then
-  vim.keymap.set({ "n" }, "<F11>", function()
+  map({ "n" }, "<F11>", function()
     if vim.g.neovide_fullscreen == false then
       vim.g.neovide_fullscreen = true
     else
